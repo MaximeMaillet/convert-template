@@ -1,0 +1,26 @@
+version: '3'
+
+volumes:
+  public-assets:
+
+services:
+  app:
+    container_name: convert-template-app
+    image: deuxmax/convert-template
+    restart: always
+    volumes:
+      - .data/templates:/var/www/storage/app/templates
+      - public-assets:/var/www/public
+
+  web:
+    container_name: convert-template-web
+    image: nginx:1.13
+    restart: always
+    links:
+      - app
+    volumes:
+      - ./Docker/nginx/conf.d/site.conf:/etc/nginx/conf.d/default.conf
+      - ./Docker/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - public-assets:/var/www/public
+    ports:
+      - 8084:80
